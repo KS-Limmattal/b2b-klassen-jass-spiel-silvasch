@@ -1,5 +1,6 @@
-import java.util.Random;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Diese Klasse repräsentiert einen Kartenstapel mit einer variablen Anzahl
@@ -26,5 +27,42 @@ import java.util.Arrays;
  *
  */
 public class Deck {
+    private ArrayList<Card> cards;
+
+    public Deck(Card[] cards) {
+        this.cards = new ArrayList<Card>(Arrays.asList(cards));
+    }
+
+    public Deck() {
+        ArrayList<Card> cards = new ArrayList<Card>();
     
+        for (Suit suit: Suit.values()) {
+            for (Rank rank: Rank.values()) {
+                cards.add(new Card(suit, rank));
+            }
+        }
+
+        this.cards = cards;
+    }
+
+    public void shuffle() {
+        Collections.shuffle(this.cards);
+    }
+
+    public void addCard(Card card) {
+        if (this.cards.contains(card)) {
+            System.out.println("deck already contains this card.");
+            return;
+        }
+
+        this.cards.add(card);
+    }
+
+    public void pop() {
+        this.cards.removeLast();
+    }
+
+    public Card[] getCards() {
+        return this.cards.toArray(new Card[this.cards.size()]);
+    }
 }
