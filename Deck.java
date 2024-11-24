@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.StringJoiner;
 
 /**
  * Diese Klasse repräsentiert einen Kartenstapel mit einer variablen Anzahl
@@ -17,7 +19,7 @@ import java.util.Collections;
  * - eine Methode pop(), welche die letzte Karte im Array aus dem Deck entfernt,
  * sofern Karten vorhanden sind
  * - eine Methode shuffle(), welche die Karten im Array durchmischt
- * 
+ *
  * Tipps:
  * - Um ein Array zu redimensionieren, verwende den Befehl "Arrays.copyOf" aus
  * java.util.Arrays
@@ -29,13 +31,15 @@ import java.util.Collections;
 public class Deck {
     private ArrayList<Card> cards;
 
+    public static Suit trumpSuit;
+
     public Deck(Card[] cards) {
         this.cards = new ArrayList<Card>(Arrays.asList(cards));
     }
 
     public Deck() {
         ArrayList<Card> cards = new ArrayList<Card>();
-    
+
         for (Suit suit: Suit.values()) {
             for (Rank rank: Rank.values()) {
                 cards.add(new Card(suit, rank));
@@ -43,6 +47,37 @@ public class Deck {
         }
 
         this.cards = cards;
+    }
+
+    public int[] validCards(Deck played) {
+        Card[] playedCards = played.getCards();
+        if (playedCards.length > 3) {
+            System.out.println("something went horribly wrong.");
+            return new int[0];
+        }
+
+        if (playedCards.length == 0) {
+            int[] validIndices = new int[this.cards.size()];
+            for (int i = 0; i < this.cards.size(); i++) {
+                validIndices[i] = i;
+            }
+        }
+
+        Suit initialSuit = playedCards[0].suit;
+
+        int[] validIndices = new int[0];
+
+        for (Card card : this.cards) {
+            if (card.suit == initialSuit) {
+                validCards.addCard(card);
+            }
+        }
+
+        if (validCards.getCards().length == 0) {
+            validCards = this;
+        }
+
+        return validCards;
     }
 
     public void shuffle() {
@@ -58,11 +93,33 @@ public class Deck {
         this.cards.add(card);
     }
 
-    public void pop() {
-        this.cards.removeLast();
+    public Card pop() {
+        return this.cards.removeLast();
+    }
+
+    public boolean equals(Deck other) {
+        if (this.cards.size() != other.cards.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < this.cards.size(); i++) {
+            if (!(this.cards.get(i).equals(other.cards.get(i)))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public Card[] getCards() {
         return this.cards.toArray(new Card[this.cards.size()]);
+    }
+
+    public String toString() {
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        for (Card card : this.cards) {
+            stringJoiner.add(card.toString());
+        }
+        return stringJoiner.toString();
     }
 }

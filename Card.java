@@ -7,8 +7,8 @@
  * andere Karte hat.
  */
 public class Card {
-    private Suit suit;
-    private Rank rank;    
+    public Suit suit;
+    public Rank rank;
 
     public Card(Suit suit, Rank rank) {
         this.suit = suit;
@@ -20,6 +20,6 @@ public class Card {
     }
 
     public boolean equals(Card other) {
-        return this.suit == other.suit && this.rank == other.rank;
+        return (this.suit == other.suit) && (this.rank == other.rank);
     }
 }

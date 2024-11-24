@@ -8,13 +8,41 @@
 public class Jass {
     public static void main(String[] args) {
         Deck deck = new Deck();
-        deck.shuffle(); 
-        for (int i = 0; i < 30; i++) {
-            deck.pop();
+        deck.shuffle();
+        Deck hand1 = new Deck(new Card[0]);
+        Deck hand2 = new Deck(new Card[0]);
+        Deck hand3 = new Deck(new Card[0]);
+        Deck hand4 = new Deck(new Card[0]);
+
+        for (int i = 0; i < 9; i++) {
+            hand1.addCard(deck.pop());
         }
-        deck.addCard(new Card(Suit.EICHELN, Rank.ASS));
-        for (Card card: deck.getCards()) {
-            System.out.println(card);
+
+        for (int i = 0; i < 9; i++) {
+            hand2.addCard(deck.pop());
+        }
+
+        for (int i = 0; i < 9; i++) {
+            hand3.addCard(deck.pop());
+        }
+
+        for (int i = 0; i < 9; i++) {
+            hand4.addCard(deck.pop());
+        }
+
+        while (true) {
+            Deck playedCards = new Deck(new Card[]{});
+            playedCards.addCard(hand1.validCards(playedCards).pop());
+            playedCards.addCard(hand2.validCards(playedCards).pop());
+            playedCards.addCard(hand3.validCards(playedCards).pop());
+            playedCards.addCard(hand4.validCards(playedCards).pop());
+
+            System.out.println(playedCards);
+
+            System.out.println(hand1);
+            System.out.println(hand2);
+            System.out.println(hand3);
+            System.out.println(hand4);
         }
     }
 }
