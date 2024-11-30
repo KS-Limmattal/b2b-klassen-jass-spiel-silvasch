@@ -29,97 +29,133 @@ import java.util.StringJoiner;
  *
  */
 public class Deck {
-    private ArrayList<Card> cards;
 
-    public static Suit trumpSuit;
+	private Card[] cards;
 
-    public Deck(Card[] cards) {
-        this.cards = new ArrayList<Card>(Arrays.asList(cards));
-    }
+	public static Suit trumpSuit;
 
-    public Deck() {
-        ArrayList<Card> cards = new ArrayList<Card>();
+	public Deck(Card[] cards) {
+		this.cards = cards;
+	}
 
-        for (Suit suit: Suit.values()) {
-            for (Rank rank: Rank.values()) {
-                cards.add(new Card(suit, rank));
-            }
-        }
+	public Deck() {
+		Card[] cards = new Card[36];
 
-        this.cards = cards;
-    }
+		int index = 0;
+		for (Suit suit : Suit.values()) {
+			for (Rank rank : Rank.values()) {
+				cards[index] = new Card(suit, rank);
+				index++;
+			}
+		}
 
-    public int[] validCards(Deck played) {
-        Card[] playedCards = played.getCards();
-        if (playedCards.length > 3) {
-            System.out.println("something went horribly wrong.");
-            return new int[0];
-        }
+		this.cards = cards;
+	}
 
-        if (playedCards.length == 0) {
-            int[] validIndices = new int[this.cards.size()];
-            for (int i = 0; i < this.cards.size(); i++) {
-                validIndices[i] = i;
-            }
-        }
+	public int[] validCards(Deck played) {
+		Card[] playedCards = played.getCards();
+		if (playedCards.length > 3) {
+			System.out.println("something went horribly wrong.");
+			return new int[0];
+		}
 
-        Suit initialSuit = playedCards[0].suit;
+		if (playedCards.length == 0) {
+			int[] validIndices = new int[this.cards.length];
+			for (int i = 0; i < this.cards.length; i++) {
+				validIndices[i] = i;
+			}
+			return validIndices;
+		}
 
-        int[] validIndices = new int[0];
+		Suit initialSuit = playedCards[0].suit;
 
-        for (Card card : this.cards) {
-            if (card.suit == initialSuit) {
-                validCards.addCard(card);
-            }
-        }
+		int[] validIndices = new int[0];
 
-        if (validCards.getCards().length == 0) {
-            validCards = this;
-        }
+		for (int i = 0; i < this.cards.length; i++) {
+			Card card = this.cards[i];
+			if (card.suit == initialSuit || card.suit == trumpSuit) {
+				validIndices = Arrays.copyOf(
+					validIndices,
+					validIndices.length + 1
+				);
+				validIndices[validIndices.length - 1] = i;
+			}
+		}
 
-        return validCards;
-    }
+		if (validIndices.length == 0) {
+			for (int i = 0; i < this.cards.length; i++) {
+				validIndices[i] = i;
+			}
+		}
 
-    public void shuffle() {
-        Collections.shuffle(this.cards);
-    }
+		return validIndices;
+	}
 
-    public void addCard(Card card) {
-        if (this.cards.contains(card)) {
-            System.out.println("deck already contains this card.");
-            return;
-        }
+	public void shuffle() {
+		Collections.shuffle(Arrays.asList(this.cards));
+	}
 
-        this.cards.add(card);
-    }
+	public void addCard(Card newCard) {
+		for (Card card : this.cards) {
+			if (card.equals(newCard)) {
+				return;
+			}
+		}
 
-    public Card pop() {
-        return this.cards.removeLast();
-    }
+		this.cards = Arrays.copyOf(this.cards, this.cards.length + 1);
+		this.cards[this.cards.length - 1] = newCard;
+	}
 
-    public boolean equals(Deck other) {
-        if (this.cards.size() != other.cards.size()) {
-            return false;
-        }
+	public Card pop() {
+		Card last = this.cards[this.cards.length - 1];
+		this.cards = Arrays.copyOf(this.cards, this.cards.length - 1);
+		return last;
+	}
 
-        for (int i = 0; i < this.cards.size(); i++) {
-            if (!(this.cards.get(i).equals(other.cards.get(i)))) {
-                return false;
-            }
-        }
+	public Card removeAt(int indexToRemove) {
+		Card[] newCards = new Card[this.cards.length - 1];
 
-        return true;
-    }
+		boolean hadSkip = false;
+		for (int i = 0; i < this.cards.length; i++) {
+			if (i == indexToRemove) {
+				hadSkip = true;
+				continue;
+			}
+			int index = i;
+			if (hadSkip) {
+				index--;
+			}
+			newCards[index] = this.cards[i];
+		}
 
-    public Card[] getCards() {
-        return this.cards.toArray(new Card[this.cards.size()]);
-    }
+		Card card = this.cards[indexToRemove];
+		this.cards = newCards;
+		return card;
+	}
 
-    public String toString() {
-        StringJoiner stringJoiner = new StringJoiner(", ");
-        for (Card card : this.cards) {
-            stringJoiner.add(card.toString());
-        }
-        return stringJoiner.toString();
-    }
+	public boolean equals(Deck other) {
+		if (this.cards.length != other.cards.length) {
+			return false;
+		}
+
+		for (int i = 0; i < this.cards.length; i++) {
+			if (!(this.cards[i].equals(other.cards[i]))) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public Card[] getCards() {
+		return this.cards;
+	}
+
+	public String toString() {
+		StringJoiner stringJoiner = new StringJoiner(", ");
+		for (Card card : this.cards) {
+			stringJoiner.add(card.toString());
+		}
+		return stringJoiner.toString();
+	}
 }
