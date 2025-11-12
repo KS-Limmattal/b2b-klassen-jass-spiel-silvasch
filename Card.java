@@ -7,5 +7,20 @@
  * andere Karte hat.
  */
 public class Card {
-    
+
+	Suit suit;
+	Rank rank;
+
+	public Card(Suit suit, Rank rank) {
+		this.suit = suit;
+		this.rank = rank;
+	}
+
+	public String toString() {
+		return String.format("%s %s", this.suit, this.rank);
+	}
+
+	public boolean equals(Card other) {
+		return (this.suit == other.suit) && (this.rank == other.rank);
+	}
 }
